@@ -1,20 +1,38 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import Login from "./src/screens/Login";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Activities from "./src/screens/Activities";
 import Map from "./src/screens/Map";
+import { navStyles } from "./src/styles";
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Activities" component={Activities} />
-        <Stack.Screen name="Map" component={Map} />
-      </Stack.Navigator>
+      <Tab.Navigator
+        initialRouteName="Activities"
+        screenOptions={{
+          tabBarActiveTintColor: navStyles.primaryColor.color,
+          tabBarInactiveTintColor: navStyles.secondaryColor.color,
+          tabBarStyle: navStyles.primaryBG,
+        }}
+      >
+        <Tab.Screen name="Activities" component={Activities} options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="calendar" color={color} size={26} />
+          ),
+          tabBarShowLabel: false,
+          
+        }}/>
+        <Tab.Screen name="Map" component={Map} options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="map" color={color} size={26} />
+          ),
+          tabBarShowLabel: false,
+        }}/>
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
