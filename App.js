@@ -2,11 +2,12 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Activities from "./src/screens/Activities";
+import Activities from "./src/screens/activities/Activities";
 import Map from "./src/screens/Map";
 import Login from "./src/screens/Login"
 import { navStyles } from "./src/styles";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import MapModal from "./src/screens/MapModal";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -19,6 +20,7 @@ function MainPages() {
         tabBarActiveTintColor: navStyles.primaryColor.color,
         tabBarInactiveTintColor: navStyles.secondaryColor.color,
         tabBarStyle: navStyles.primaryBG,
+        headerShown:false,
       }}
     >
       <Tab.Screen name="Activities" component={Activities} options={{
@@ -46,6 +48,9 @@ export default function App() {
         <Stack.Screen name="MainPages" component={MainPages} options={{
           headerShown: false
         }} />
+        <Stack.Group screenOptions={{presentation: "modal", headerShown:false} }>
+          <Stack.Screen name="MapModal" component={MapModal}/>
+        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
   );
