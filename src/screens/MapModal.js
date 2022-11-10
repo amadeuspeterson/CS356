@@ -10,16 +10,21 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
+  Platform
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
 export default function MapModal({ navigation }) {
   const [eventName, setEventName] = useState("Name");
   const [eventDate, setEventDate] = useState("Date");
   const [eventAddress, setEventAddress] = useState("Address");
   const [eventDescription, setEventDescription] = useState("Description");
-  const [testInput, setTestInput] = useState("testInput");
   const [title, setTitle] = useState("Create an Event");
   const [editable, setEditable] = useState(true);
+  const [image, setImage] = useState(null);
+  const [date, setDate] = useState(new Date(1598051730000));
   const route = useRoute().params;
 
   useEffect(() => {
@@ -32,6 +37,42 @@ export default function MapModal({ navigation }) {
     }
     setEditable(route.edit);
   }, [route]);
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
+  // const onChange = (event, selectedDate) => {
+  //   const currentDate = selectedDate;
+  //   setDate(currentDate);
+  // };
+
+  // const showMode = (currentMode) => {
+  //   DateTimePickerAndroid.open({
+  //     value: date,
+  //     onChange,
+  //     mode: currentMode,
+  //     is24Hour: true,
+  //   });
+  // };
+
+  // const showDatepicker = () => {
+  //   showMode('date');
+  // };
+
+  // const showTimepicker = () => {
+  //   showMode('time');
+  // };
 
   return (
     <ScrollView
@@ -81,10 +122,13 @@ export default function MapModal({ navigation }) {
         placeholderTextColor={"black"}
         editable={editable}
       />
-      <TextInput
-        // defaultValue={testInput}
-        onChange={setTestInput}
-      />
+      <Button title="Pick an image from camera roll" onPress={pickImage} />
+      {image && (
+        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+      )}
+      {/* <Button onPress={showDatepicker} title="Show date picker!" />
+      <Button onPress={showTimepicker} title="Show time picker!" /> */}
+      {/* <Text>selected: {date.toLocaleString()}</Text> */}
 
       {editable && (
         <View style={{ position: "absolute", bottom: "15%" }}>
@@ -94,6 +138,7 @@ export default function MapModal({ navigation }) {
 
               const events =
                 JSON.parse(await AsyncStorage.getItem("events")) || [];
+
               const newEvent = {
                 name: eventName,
                 date: eventDate,
@@ -101,9 +146,8 @@ export default function MapModal({ navigation }) {
                 description: eventDescription,
                 coords: route.coords,
               };
-              console.log(newEvent);
-              console.log(events.length);
               events.push(newEvent);
+
               AsyncStorage.setItem("events", JSON.stringify(events));
 
               navigation.navigate("Map", { reset: true });
