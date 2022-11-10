@@ -59,12 +59,12 @@ export default function Map({ navigation }) {
         showsUserLocation={true}
         style={{ height: "100%" }}
       >
-        <Button
+        {/* <Button
           title="test"
           onPress={async () => {
             console.log(await mapRef.current.getCurrentLocation);
           }}
-        ></Button>
+        ></Button> */}
         {events.map((marks, index) => {
           return (
             <Marker
