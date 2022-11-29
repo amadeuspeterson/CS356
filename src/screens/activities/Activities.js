@@ -1,5 +1,6 @@
 import { SafeAreaView, ScrollView, useColorScheme } from "react-native";
 import Activity from "./Activity";
+import Toast from "react-native-root-toast";
 
 const data = [1, 2, 3];
 const betterData = [

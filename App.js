@@ -9,6 +9,7 @@ import { navStyles } from "./src/styles";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MapModal from "./src/screens/MapModal";
 import AddEvent from "./src/screens/AddEvent";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -64,22 +65,24 @@ function MainPages() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen
-          name="MainPages"
-          component={MainPages}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Group
-          screenOptions={{ presentation: "modal", headerShown: false }}
-        >
-          <Stack.Screen name="MapModal" component={MapModal} />
-        </Stack.Group>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <RootSiblingParent>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen
+            name="MainPages"
+            component={MainPages}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Group
+            screenOptions={{ presentation: "modal", headerShown: false }}
+          >
+            <Stack.Screen name="MapModal" component={MapModal} />
+          </Stack.Group>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </RootSiblingParent>
   );
 }
