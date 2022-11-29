@@ -106,6 +106,37 @@ export default function Map({ navigation }) {
           </View>
         </Marker>
       </MapView>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          position: "absolute",
+          bottom: "5%",
+          width: "100%",
+        }}
+      >
+        {/* TODO change purple */}
+        <View
+          style={{
+            width: 360,
+            justifyContent: "center",
+            alignItems: "center",
+            height: 50,
+            borderRadius: 7,
+            backgroundColor: "purple",
+          }}
+        >
+          <Text style={{ color: "white" }}>
+            Press and hold on the map to add an event
+          </Text>
+          <Button
+            title="DELETE ALL EVENTS"
+            onPress={async ()=>{
+              await AsyncStorage.clear()
+            }}
+          />
+        </View>
+      </View>
     </View>
   );
 }

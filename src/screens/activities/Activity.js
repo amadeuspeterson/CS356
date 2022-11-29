@@ -1,7 +1,10 @@
 import { View, Text, Image } from "react-native";
 import { Button } from "react-native-elements";
 
-export default function Activity({ eventName, image, date }) {
+
+export default function Activity({ name, image, date, sample }) {
+  const toShow = sample?image:{uri: image};
+  console.log(image)
   return (
     <View>
       <View
@@ -10,20 +13,21 @@ export default function Activity({ eventName, image, date }) {
           marginTop: 10,
         }}
       >
-        <Text>{date}</Text>
+        <Text>{(new Date(date).toLocaleString())}</Text>
         <Text
           style={{
             fontSize: 20,
           }}
         >
-          {eventName}
+          {name}
         </Text>
       </View>
       <Image
         style={{
           width: "100%",
+          height:200
         }}
-        source={image}
+        source={toShow}
       />
       <View
         style={{

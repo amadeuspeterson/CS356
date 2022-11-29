@@ -11,10 +11,12 @@ import {
   TouchableOpacity,
   View,
   Image,
-  Platform
+  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function MapModal({ navigation }) {
   const [eventName, setEventName] = useState("Name");
@@ -24,7 +26,7 @@ export default function MapModal({ navigation }) {
   const [title, setTitle] = useState("Create an Event");
   const [editable, setEditable] = useState(true);
   const [image, setImage] = useState(null);
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date());
   const route = useRoute().params;
 
   useEffect(() => {
@@ -38,6 +40,10 @@ export default function MapModal({ navigation }) {
     setEditable(route.edit);
   }, [route]);
 
+  const onChangeDate = (e,date) => {
+    setDate(new Date(date))
+  }
+
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -47,91 +53,97 @@ export default function MapModal({ navigation }) {
       quality: 1,
     });
 
+    console.log(result.uri)
+
     if (!result.cancelled) {
       setImage(result.uri);
     }
-  };
-
-  // const onChange = (event, selectedDate) => {
-  //   const currentDate = selectedDate;
-  //   setDate(currentDate);
-  // };
-
-  // const showMode = (currentMode) => {
-  //   DateTimePickerAndroid.open({
-  //     value: date,
-  //     onChange,
-  //     mode: currentMode,
-  //     is24Hour: true,
-  //   });
-  // };
-
-  // const showDatepicker = () => {
-  //   showMode('date');
-  // };
-
-  // const showTimepicker = () => {
-  //   showMode('time');
-  // };
+    
+   };
 
   return (
-    <ScrollView
-      contentContainerStyle={{ top: 50, alignItems: "center", height: "100%" }}
-    >
-      <Text style={{ fontSize: 25, fontWeight: "bold" }}>{title}</Text>
+    <>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{
+          top: 50,
+          height: "100%",
+          alignItems: "center",
+        }}
+        style={{ marginBottom: -80 }}
+      >
+        <Text style={{ fontSize: 25, fontWeight: "bold" }}>{title}</Text>
 
-      <TextInput
-        style={[styles.textInput, { borderWidth: editable ? 2 : 0 }]}
-        // value={eventName}
-        onChangeText={setEventName}
-        placeholder={editable ? "Name" : eventName}
-        placeholderTextColor={"black"}
-        editable={editable}
-      />
-      <TextInput
-        style={[styles.textInput, { borderWidth: editable ? 2 : 0 }]}
-        // value={eventDate}
-        onChangeText={setEventDate}
-        placeholder={editable ? "Date" : eventDate}
-        placeholderTextColor={"black"}
-        editable={editable}
-      />
-      <TextInput
-        multiline
-        numberOfLines={1}
-        style={[
-          styles.textInput,
-          { height: 80, borderWidth: editable ? 2 : 0 },
-        ]}
-        // value={eventAddress}
-        onChangeText={setEventAddress}
-        placeholder={editable ? "Address" : eventAddress}
-        placeholderTextColor={"black"}
-        editable={editable}
-      />
-      <TextInput
-        multiline
-        numberOfLines={1}
-        style={[
-          styles.textInput,
-          { height: 150, borderWidth: editable ? 2 : 0 },
-        ]}
-        // value={eventDescription}
-        onChangeText={setEventDescription}
-        placeholder={editable ? "Description" : eventDescription}
-        placeholderTextColor={"black"}
-        editable={editable}
-      />
-      <Button title="Pick an image from camera roll" onPress={pickImage} />
-      {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-      )}
-      {/* <Button onPress={showDatepicker} title="Show date picker!" />
+        <TextInput
+          style={[styles.textInput, { borderWidth: editable ? 2 : 0 }]}
+          // value={eventName}
+          onChangeText={setEventName}
+          placeholder={editable ? "Name" : eventName}
+          placeholderTextColor={"black"}
+          editable={editable}
+        />
+        <View
+          style={{
+            padding: 8,
+            width: 360,
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexDirection: "row",
+          }}
+        >
+          <Text style={{ fontSize: 18 }}>Date:</Text>
+          <DateTimePicker
+            style={{ width: 240, fontSize: 14 }}
+            value={date}
+            mode={"datetime"}
+            display={"compact"}
+            onChange={onChangeDate}
+          
+          />
+        </View>
+        <TextInput
+          multiline
+          numberOfLines={1}
+          style={[
+            styles.textInput,
+            { height: 80, borderWidth: editable ? 2 : 0 },
+          ]}
+          // value={eventAddress}
+          onChangeText={setEventAddress}
+          placeholder={editable ? "Address" : eventAddress}
+          placeholderTextColor={"black"}
+          editable={editable}
+        />
+        <TextInput
+          multiline
+          numberOfLines={1}
+          style={[
+            styles.textInput,
+            { height: 150, borderWidth: editable ? 2 : 0 },
+          ]}
+          // value={eventDescription}
+          onChangeText={setEventDescription}
+          placeholder={editable ? "Description" : eventDescription}
+          placeholderTextColor={"black"}
+          editable={editable}
+        />
+        <Button title="Pick an image from camera roll" onPress={pickImage} />
+        {image && (
+          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+        )}
+        {/* <Button onPress={showDatepicker} title="Show date picker!" />
       <Button onPress={showTimepicker} title="Show time picker!" /> */}
-      {/* <Text>selected: {date.toLocaleString()}</Text> */}
-
+        {/* <Text>selected: {date.toLocaleString()}</Text> */}
+      </KeyboardAwareScrollView>
       {editable && (
-        <View style={{ position: "absolute", bottom: "15%" }}>
+        <View
+          style={{
+            alignItems: "center",
+            display: "absolute",
+            marginBottom: 10,
+            marginTop: 10,
+            bottom: 0,
+          }}
+        >
           <TouchableOpacity
             onPress={async () => {
               //store data
@@ -141,10 +153,11 @@ export default function MapModal({ navigation }) {
 
               const newEvent = {
                 name: eventName,
-                date: eventDate,
+                date: date.toISOString(),
                 address: eventAddress,
                 description: eventDescription,
                 coords: route.coords,
+                image,
               };
               events.push(newEvent);
 
@@ -155,7 +168,6 @@ export default function MapModal({ navigation }) {
             style={{
               justifyContent: "center",
               alignItems: "center",
-              marginTop: 50,
               width: 360,
               height: 36,
               backgroundColor: "purple",
@@ -168,7 +180,7 @@ export default function MapModal({ navigation }) {
           </TouchableOpacity>
         </View>
       )}
-    </ScrollView>
+    </>
   );
 }
 
@@ -178,7 +190,8 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     width: 360,
     padding: 8,
-    marginTop: 10,
+    marginTop: 4,
+    marginBottom: 4,
     backgroundColor: "white",
   },
 });
